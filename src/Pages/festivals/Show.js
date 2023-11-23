@@ -1,16 +1,20 @@
-import {useParams} from 'react-router-dom';
+import {useParams,  Link,  useNavigate} from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from "../../Config/API"
+
+import DeleteBtn from '../../Components/DeleteBtn';
+// import { Button } from 'bootstrap';
 
 const Show = () => {
 
     const {id} = useParams();
+    const navigate = useNavigate();
     const [festival, setFestival] = useState(null);
 
     let token = localStorage.getItem('token');
 
     useEffect(() => {
-        axios.get(`https://festivals-api.vercel.app/api/festivals/${id}`, {
+        axios.get(`/festivals/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -33,7 +37,13 @@ const Show = () => {
             <div>
                 <p><b>Title:</b> {festival.title} </p>
                 <p><b>Description:</b> {festival.description}</p>
+                <p><b>City:</b> {festival.city}</p>
+                <p><b>Start_Date:</b> {festival.start_date}</p>
+                <p><b>End_Date:</b> {festival.end_date}</p>
                 <hr/>
+
+                <Link to={`/festivals/${id}/edit`}>Edit Festival</Link>
+                <DeleteBtn id={festival._id} resource="festivals" deleteCallback={() => navigate('/festivals')}/>
             </div>
         </>
     )

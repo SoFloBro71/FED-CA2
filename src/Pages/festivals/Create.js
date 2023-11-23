@@ -1,5 +1,6 @@
 import { useState } from "react"
-import axios from "axios"
+import axios from "../../Config/API"
+
 import { useNavigate } from "react-router-dom"
 
 const Create = () => {
@@ -8,7 +9,13 @@ const Create = () => {
         color: 'red'
     };
 
-    const [errors, setErrors] = useState();
+    const [errors, setErrors] = useState({
+        title: "",
+        description: "",
+        city: "",
+        start_date: "",
+        end_date: "",
+    });
 
     const Navigate = useNavigate();
 
@@ -44,10 +51,12 @@ const Create = () => {
                     [field]:{
                         message: `${field} is required!`
                     }
-                }))
-            }
-        })
-    }
+                }));
+            };
+        });
+
+        return included;
+    };
 
     const submitForm = (e) => {
         e.preventDefault();
@@ -58,7 +67,7 @@ const Create = () => {
 
             let token = localStorage.getItem('token');
 
-            axios.post('https://festivals-api.vercel.app/api/festivals', form, {
+            axios.post('/festivals', form, {
                 headers:{
                     "Authorization": `Bearer ${token}`
                 }
@@ -85,22 +94,22 @@ const Create = () => {
                 <hr/>
                 {/* DESCRIPTION */}
                 <div>
-                Description: <input type='text' onChange={handleForm} value={form.description} name='description'/> <span style={errorStyle}>{errors.title?.message}</span> 
+                Description: <input type='text' onChange={handleForm} value={form.description} name='description'/> <span style={errorStyle}>{errors.description?.message}</span> 
                 </div>
                 <hr/>
                 {/* CITY */}
                 <div>
-                City: <input type='text' onChange={handleForm} value={form.city} name='city'/> <span style={errorStyle}>{errors.title?.message}</span> 
+                City: <input type='text' onChange={handleForm} value={form.city} name='city'/> <span style={errorStyle}>{errors.city?.message}</span> 
                 </div>
                 <hr/>
                 {/* START DATE */}
                 <div>
-                Start_Date: <input type='datetime-local' onChange={handleForm} value={form.start_date} name='start_date'/> <span style={errorStyle}>{errors.title?.message}</span> 
+                Start_Date: <input type='datetime-local' onChange={handleForm} value={form.start_date} name='start_date'/> <span style={errorStyle}>{errors.start_date?.message}</span> 
                 </div>
                 <hr/>
                 {/* END DATE */}
                 <div>
-                End_Date: <input type='datetime-local' onChange={handleForm} value={form.end_date} name='end_date'/> <span style={errorStyle}>{errors.title?.message}</span> 
+                End_Date: <input type='datetime-local' onChange={handleForm} value={form.end_date} name='end_date'/> <span style={errorStyle}>{errors.end_date?.message}</span> 
                 </div>
                 <hr/>
 
