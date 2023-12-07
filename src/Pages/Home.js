@@ -1,11 +1,15 @@
 import LoginFrom from "../Components/LoginForm";
+import { useAuth } from "../Context/AuthContext";
 
-const Home = ({ authenticated, onAuthenticated }) => {
+const Home = () => {
+
+    const { authenticated} = useAuth();
+
     return(
         <>
             <h3>Home</h3>
             {(!authenticated) ? (
-            <LoginFrom authenticated={authenticated} onAuthenticated={onAuthenticated}/>
+            <LoginFrom authenticated={authenticated}/>
             ) : ( <p>You are Authenticated</p>)
             }
 
