@@ -1,75 +1,82 @@
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from './Context/AuthContext';
 
 // import Pages
 
+// COURSES
+
 import Home from './Pages/Home';
-import FestivalsIndex from './Pages/festivals/Index';
-import FestivalsShow from './Pages/festivals/Show';
-import FestivalsCreate from './Pages/festivals/Create';
-import FestivalsEdit from './Pages/festivals/Edit';
-import PageNotFound from './Pages/festivals/PageNotFound';
+import CoursesIndex from './Pages/Courses/Index';
+import CoursesShow from './Pages/Courses/Show';
+import CoursesCreate from './Pages/Courses/Create';
+import CoursesEdit from './Pages/Courses/Edit';
+import PageNotFound from './Pages/Courses/PageNotFound';
 
+// ENROLMENTS
 
-// import components
+import EnrolmentsIndex from './Pages/Enrolments/Index';
+import EnrolmentsShow from './Pages/Enrolments/Show';
+import EnrolmentsCreate from './Pages/Enrolments/Create';
+import EnrolmentsEdit from './Pages/Enrolments/Edit';
+
+// LECTURERS
+
+import LecturersIndex from './Pages/Lecturers/Index';
+import LecturersShow from './Pages/Lecturers/Show';
+import LecturersCreate from './Pages/Lecturers/Create';
+import LecturersEdit from './Pages/Lecturers/Edit';
+
+// IMPORT COMPONENTS
 
 import NavBar from './Components/NavBar';
 
 const App = () => {
 
-  const [authenticated, setAuthenticated] = useState(false);
+  const {authenticated, onAuthenticated} = useAuth();
 
   let protectedRoutes;
 
   useEffect(() => {
     if(localStorage.getItem('token')){
-      setAuthenticated(true);
+      onAuthenticated(true);
     }
   }, []);
-
-  const onAuthenticated = (auth, token) => {
-    setAuthenticated(auth);
-
-    if (auth){
-      localStorage.setItem('token', token);
-    }
-    else{
-      localStorage.removeItem('token');
-    }
-  }
 
   if(authenticated){
     protectedRoutes = (
       <>
+          {/* COURSES */}
+        <Route path='/courses/create' element={<CoursesCreate/>} />
+        <Route path='/courses/:id/edit' element={<CoursesEdit/>} />
+        <Route path='/courses/:id' element={<CoursesShow/>} />
 
-        <Route path='/festivals/create' element={<FestivalsCreate/>} />
-        <Route path='/festivals/:id/edit' element={<FestivalsEdit/>} />
-        <Route path='/festivals/:id' element={<FestivalsShow/>} />
+          {/* ENROLMENTS */}
+
+        <Route path='/enrolments/create' element={<EnrolmentsCreate/>} />
+        <Route path='/enrolments/:id/edit' element={<EnrolmentsEdit/>} />
+        <Route path='/enrolments/:id' element={<EnrolmentsShow/>} />
+
+          {/* LECTURERS */}
+
+        <Route path='/lecturers/create' element={<LecturersCreate/>} />
+        <Route path='/lecturers/:id/edit' element={<LecturersEdit/>} />
+        <Route path='/lecturers/:id' element={<LecturersShow/>} />
       </>
       )
     }
-    // else {
-    //   <>
-    //     <Route path='/festivals/create' element={<Navigate to="/" />} />
-    //     <Route path='/festivals/:id/edit' element={<Navigate to="/" />} />
-    //     <Route path='/festivals/:id' element={<Navigate to="/" />} />
-      
-    //   </>
-    // }
 
   return(
     <Router>
-      <NavBar authenticated={authenticated} onAuthenticated={onAuthenticated} />
+      <NavBar />
       <Routes>
-        <Route path='/' element={<Home authenticated={authenticated} onAuthenticated={onAuthenticated}/>} />
-        <Route path='/festivals' element={<FestivalsIndex authenticated={authenticated} onAuthenticated={onAuthenticated}/>} />
-        {protectedRoutes}
-{/* 
-        <Route path='/festivals/:id' element={(authenticated) ? (<FestivalsShow/>) : (<Navigate to="/" />)} />
-        <Route path='/festivals/:id/edit' element={(authenticated) ? (<FestivalsEdit/>) : (<Navigate to="/" />)} />
-        <Route path='/festivals/create' element={(authenticated) ? (<FestivalsCreate/>) : (<Navigate to="/" />)} /> */}
+        <Route path='/' element={<Home />} />
+        <Route path='/courses' element={<CoursesIndex />} />
+        <Route path='/enrolments' element={<EnrolmentsIndex />} />
+        <Route path='/lecturers' element={<LecturersIndex />} />
 
+        {protectedRoutes}
 
         <Route path='*' element={<PageNotFound />} />
 
