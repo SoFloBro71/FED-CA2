@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
+import { useAuth } from "../Context/AuthContext";
 
-const LoginForm = ({ authenticated, onAuthenticated }) => {
+const LoginForm = () => {
+
+    const {onAuthenticated} = useAuth();
 
     const errorStyle = {
         color: 'red'
@@ -17,7 +20,7 @@ const LoginForm = ({ authenticated, onAuthenticated }) => {
     const handleClick = () => {
         console.log("clicked", form)
 
-        axios.post(`https://festivals-api.vercel.app/api/users/login`, {
+        axios.post(`https://college-api.vercel.app/login`, {
             email: form.email, 
             password: form.password,
         })

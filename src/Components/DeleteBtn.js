@@ -30,6 +30,6 @@ export default function DeleteBtn ({id, resource, deleteCallback}) {
     };
 
     return(
-        <button onClick={onDelete}> {(isLoading) ? "Deleting..." : "Deleted"} </button>
+        <button className="btn btn-accent grid justify-items-end" onClick={onDelete}> {(isLoading) ? "Deleting..." : "Deleted"} </button>
     );
 };
