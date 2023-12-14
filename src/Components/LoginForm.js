@@ -11,8 +11,8 @@ const LoginForm = () => {
     };
 
     const [form, setForm] = useState({
-        email: "n00211013@iadt.ie",
-        password: "Spoopie",
+        email: "sam@bloggs.com",
+        password: "secert",
     });
 
     const [errorMessage, setErrorMessage] = useState("");

@@ -42,7 +42,7 @@ const Show = () => {
                 <p><b>Level:</b> {course.level}</p>
                 <hr/>
 
-                <button  to={`/courses/${id}/edit`}>Edit Course</button>
+                <button className="btn btn-secondary" to={`/courses/${id}/edit`}>Edit Course</button>
 
                 <DeleteBtn  id={course._id} resource="courses" deleteCallback={() => navigate('/courses')}/>
             </div>

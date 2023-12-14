@@ -40,18 +40,22 @@ const Index = ({ authenticate }) => {
 		return (
             <>
 			<div className="card-compact bg-base-100 shadow-xl">
-				<div key={course._id} >
+				<div  key={course._id} >
 					{authenticate ? (
-						<h2 className="card-title">
+						<h2 className="card-title ">
+							
 							<b>Title:</b> {course.title}{" "}
 						</h2>
+						
 					) : (
+						
 						<p>
+							<br/>
 							<b>Title:</b>
 							<Link to={`/courses/${course.id}`}> {course.title}</Link>{" "}
 						</p>
 					)}
-					<p>
+					<p >
 						<b>Description:</b> {course.description}
 					</p>
 					<div className="card-actions justify-end">

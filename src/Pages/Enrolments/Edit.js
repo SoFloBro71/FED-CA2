@@ -1,121 +1,224 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "../../Config/API";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
+import { useNavigate } from "react-router-dom";
 
 const Edit = () => {
+	const errorStyle = {
+		color: "red",
+	};
 
-    const {id} = useParams();
-    const [enrolments, setEnrolments] = useState(null);
+	const [errors, setErrors] = useState({
+		course_id: "",
+		lecturer_id: "",
+		time: "",
+		date: "",
+		status: "",
+	});
 
-    const errorStyle = {
-        color: 'red'
-    };
+	const Navigate = useNavigate();
 
-    const [errors, setErrors] = useState({
-        course_title: "",
-        lecturer_name: "",
-        datetime: "",
-        status: "" 
-    });
+	const [form, setForm] = useState({
+		course_id: "",
+		lecturer_id: "",
+		time: "",
+		date: "",
+		status: "",
+	});
 
-    const Navigate = useNavigate();
+	const handleForm = (e) => {
+		setForm((prevState) => ({
+			...prevState,
+			[e.target.name]: e.target.value,
+		}));
+	};
 
-    const [form, setForm] = useState({
-        course_title: "",
-        lecturer_name: "",
-        datetime: "",
-        status: "" 
+	const isRequired = (fields) => {
+		let included = true;
+		setErrors({});
 
-    })
+		fields.forEach((field) => {
+			if (!form[field]) {
+				included = false;
+				setErrors((prevState) => ({
+					...prevState,
+					[field]: {
+						message: `${field} is required!`,
+					},
+				}));
+			}
+		});
+
+		return included;
+	};
+
+	const [courses, setCourses] = useState([]);
+	const token = localStorage.getItem("token");
+
+	useEffect(() => {
+		axios
+			.get(`/courses`, {
+				headers: { Authorization: `Bearer ${token}` },
+			})
+
+			.then((response) => {
+				console.log(response.data.data);
+				setCourses(response.data.data);
+			})
+
+			.catch((err) => {
+				console.log(err.response.data);
+			});
+	}, []);
+
+	const courseList = courses.map((course) => {
+		return <option value={course.id}>{course.title}</option>;
+	});
+
+	useEffect(() => {
+		axios
+			.get(`/lecturers`, {
+				headers: { Authorization: `Bearer ${token}` },
+			})
+
+			.then((response) => {
+				console.log(response.data.data);
+				setLecturers(response.data.data);
+			})
+
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
+
+	const [lecturers, setLecturers] = useState([]);
+
+	const lecturerList = lecturers.map((lecturer) => {
+		return <option value={lecturer.id}>{lecturer.name}</option>;
+	});
+
+	const submitForm = (e) => {
+		e.preventDefault();
+		console.log("Submitted", form);
+
+		if (isRequired(["time", "date"])) {
+			let token = localStorage.getItem("token");
+
+			console.log("API");
+
+			axios
+				.post("/enrolments", form, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
+				.then((response) => {
+					console.log("API", response.data);
+					Navigate("/enrolments");
+				})
+
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
+	return (
+		<>
+			<h3>Create Enrolments</h3>
+			<br/>
+			<form onSubmit={submitForm}>
+				{/* TITLE */}
+
+				<div key="">
+					Course Title:{" "}
+					<select
+						className="input input-bordered input-secondary input-sm "
+						name="course_id"
+						onChange={handleForm}
+					>
+						{courseList}
+					</select>
+				</div>
+                <br/>
+				<hr />
+                <br/>
+
+				{/* LECTURER NAME */}
+				<div>
+					Lecturer Name:{" "}
+					<select
+						className="input input-bordered input-secondary input-sm "
+						name="lecturer_id"
+						onChange={handleForm}
+					>
+						{lecturerList}
+					</select>
+				</div>
+                <br/>
+				<hr />
+                <br/>
+
+				{/* TIME */}
+				<div>
+					Time:{" "}
+					<input
+						type="time"
+						className="input input-bordered input-secondary input-sm "
+						onChange={handleForm}
+						value={form.time}
+						name="time"
+					/>{" "}
+					<span style={errorStyle}>{errors.time?.message}</span>
+				</div>
+                <br/>
+				<hr />
+                <br/>
+
+				{/* DATE */}
+				<div>
+					Date:{" "}
+					<input
+						type="date"
+						className="input input-bordered input-secondary input-sm "
+						onChange={handleForm}
+						value={form.date}
+						name="date"
+					/>{" "}
+					<span style={errorStyle}>{errors.date?.message}</span>
+				</div>
+                <br/>
+				<hr />
+                <br/>
+
+				{/* STATUS */}
+				<div>
+					Status:{" "}
+					{/* ASSIGNED OPTION */}
 
 
-    const handleForm = (e) => {
-        setForm(prevState => ({
-            ...prevState,
-            [e.target.name]: e.target.value
-        }));
-    }
+					<select
+						className="input input-bordered input-secondary input-sm "
+						name="status"
+						onChange={handleForm}
+					>
+						<option value="assigned">Assigned</option>
+						<option value="interested">Interested</option>
+						<option value="associate">Associate</option>
+						<option value="carrer_break">Carrer Break</option>
 
-    const isRequired = (fields) => {
+					</select>
+				</div>
+                <br/>
+				<hr />
+                <br/>
+                
 
-        let included = true;
-        setErrors({});
-
-        fields.forEach(field => {
-            
-            if(!form[field]){
-
-                included = false;
-                setErrors(prevState => ({
-                    ...prevState,
-                    [field]:{
-                        message: `${field} is required!`
-                    }
-                }));
-            };
-        });
-
-        return included;
-
-    };
-
-    const submitForm = (e) => {
-        e.preventDefault();
-        console.log('Submitted', form);
-
-        if(isRequired(['course_title','lecturer_name', 'date', 'time', 'status'])){
-
-
-            let token = localStorage.getItem('token');
-
-            axios.put(`/enrolments/${id}`, form, {
-                headers:{
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                Navigate(`/enrolments/${id}`);
-                setEnrolments(response.data);
-                setForm(response.data)
-            })
-    
-            .catch(err => {
-                console.log(err);
-            })
-        }
-
-    }
-
-    return(
-        <>
-            <h3>Edit Enrolment</h3>
-            <form onSubmit={submitForm}>
-                {/* TITLE */}
-                <div>
-                Course Title: <input type='text' className="input input-bordered input-secondary input-sm" onChange={handleForm} value={form.course_title} name='course_title'/> <span style={errorStyle}>{errors.course_title?.message}</span> 
-                </div>
-                <hr/>
-                {/* LECTURER NAME */}
-                <div>
-                Lecturer Name: <input type='text' className="input input-bordered input-secondary input-sm" onChange={handleForm} value={form.lecturer_name} name='lecturer_name'/> <span style={errorStyle}>{errors.lecturer_name?.message}</span> 
-                </div>
-                <hr/>
-                {/* DATE + TIME */}
-                <div>
-                Date + Time: <input type='datetime-local' className="input input-bordered input-accent input-sm " onChange={handleForm} value={form.datetime} name='datetime'/> <span style={errorStyle}>{errors.datetime?.message}</span> 
-                </div>
-                <hr/>
-                {/* STATUS */}
-                <div>
-                Status: <input type='text' className="input input-bordered input-secondary input-sm" onChange={handleForm} value={form.status} name='status'/> <span style={errorStyle}>{errors.status?.message}</span> 
-                </div>
-                <hr/>
-
-                <input type='submit' />
-
-            </form>
-        </>
-    )
-}
+				<input type="submit" />
+			</form>
+		</>
+	);
+};
 
 export default Edit;

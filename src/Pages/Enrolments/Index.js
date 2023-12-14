@@ -1,61 +1,78 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "../../Config/API"
+import axios from "../../Config/API";
 
 import DeleteBtn from "../../Components/DeleteBtn";
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem("token");
 const Index = ({ authenticate }) => {
+	const [enrolments, setEnrolments] = useState([]);
 
+	useEffect(() => {
+		axios
+			.get(`/enrolments`, {
+				headers: { Authorization: `Bearer ${token}` },
+			})
 
-    const [enrolments, setEnrolments] = useState([]);
+			.then((response) => {
+				console.log(response.data.data);
+				setEnrolments(response.data.data);
+			})
 
-    useEffect(() => {
-        axios.get(`/enrolments`, {
-            headers: {Authorization: `Bearer ${token}` }
-        })
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
 
-            .then(response => {
-                console.log(response.data.data);
-                setEnrolments(response.data.data);
-            })
+	const removeEnrolment = (id) => {
+		console.log("Deleted", id);
 
-            .catch(err => {
-                console.log(err);
-            });
-    }, []);
+		let updatedEnrolment = enrolments.filter((enrolment) => {
+			return enrolment._id !== id;
+		});
 
-    const removeEnrolment = (id) => {
-        console.log("Deleted", id);
+		setEnrolments(updatedEnrolment);
+	};
 
-        let updatedEnrolment = enrolments.filter((enrolment) => {
-            return enrolment._id !== id; 
-        });
+	if (enrolments.length === 0) return <h3>There are no enrolments</h3>;
 
-        setEnrolments(updatedEnrolment);
-    }
+	const enrolmentList = enrolments.map((enrolment) => {
+		return (
+			<div key={enrolment._id}>
+				{authenticate ? (
+					<p>
+						<b>Course id:</b> {enrolment.course_id}{" "}
+					</p>
+				) : (
+					<p>
+                        <br/>
+						<b>Course id:</b>
+						<Link to={`/enrolments/${enrolment.id}`}>
+							{" "}
+							{enrolment.course_id}
+						</Link>{" "}
+					</p>
+				)}
+				<p>
+					<b>Status:</b> {enrolment.status}
+				</p>
 
-    if(enrolments.length === 0) return <h3>There are no enrolments</h3>;
+				<DeleteBtn
+					resource="enrolments"
+					id={enrolment.id}
+					deleteCallback={removeEnrolment}
+				/>
+				<hr />
+			</div>
+		);
+	});
 
-    const enrolmentList = enrolments.map(enrolment => {
-        return(
-            <div key={enrolment._id}>
-
-                {(authenticate) ? (<p><b>Course Title:</b> {enrolment.course_title} </p>) : (<p><b>Course Title:</b><Link to={`/enrolments/${enrolment.id}`}> {enrolment.course_title}</Link> </p>)}
-                <p><b>Status:</b> {enrolment.Status}</p>
-
-                <DeleteBtn resource="enrolments" id={enrolment.id} deleteCallback={removeEnrolment}/>
-                <hr/>
-            </div>
-        )
-    })
-
-    return(
-        <>
-            <h2>All Enrolments</h2>
-            {enrolmentList}
-        </>
-    );
+	return (
+		<>
+			<h2>All Enrolments</h2>
+			{enrolmentList}
+		</>
+	);
 };
 
 export default Index;

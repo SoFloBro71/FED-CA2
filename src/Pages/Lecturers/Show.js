@@ -41,7 +41,7 @@ const Show = () => {
                 <p><b>Email:</b> {lecturer.email}</p>
                 <hr/>
 
-                <Link to={`/lecturers/${id}/edit`}>Edit Lecturer</Link>
+                <button className="btn btn-secondary" to={`/lecturers/${id}/edit`}>Edit Lecturer</button>
                 <DeleteBtn id={lecturer._id} resource="lecturers" deleteCallback={() => navigate('/lecturers')}/>
             </div>
         </>
