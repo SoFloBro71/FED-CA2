@@ -132,7 +132,7 @@ const Create = () => {
 				{/* TITLE */}
 
 				<div key="">
-					Course Title:{" "}
+					Course id:{" "}
 					<select
 						className="input input-bordered input-accent input-sm "
 						name="course_id"
@@ -147,7 +147,7 @@ const Create = () => {
 
 				{/* LECTURER NAME */}
 				<div>
-					Lecturer Name:{" "}
+					Lecturer Id:{" "}
 					<select
 						className="input input-bordered input-accent input-sm "
 						name="lecturer_id"
