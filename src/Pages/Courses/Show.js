@@ -33,7 +33,7 @@ const Show = () => {
 
     return(
         <>
-            <h2 class=" justify-center">Course ID: {id}</h2>
+            <h2 className=" justify-center">Course ID: {id}</h2>
             <div>
                 <p><b>Title:</b> {course.title} </p>
                 <p><b>Description:</b> {course.description}</p>

@@ -29,49 +29,10 @@ export default function DeleteBtn({ id, resource, deleteCallback }) {
 			});
 	};
 
-	const deleteEnrolments = () => {
-		let token = localStorage.getItem("token");
-		const [courses, setCourses, lecturers, setLecturers] = useState([]);
-
-		// loop through course/lecturer enrolments and send delete request to delete them
-		lecturers.enrolments.forEach((enrolment) => {
-            // DELETING LECTURER
-			axios
-				.get(`/lecturers`, {
-					headers: { Authorization: `Bearer ${token}` },
-				})
-
-				.then((response) => {
-					console.log(response.data.data);
-					setLecturers(response.data.data);
-				})
-
-				.catch((err) => {
-					console.log(err);
-				});
-		});
-        courses.enrolments.forEach((enrolment) => {
-		// Deleting courses
-		axios
-			.get(`/courses`, {
-				headers: { Authorization: `Bearer ${token}` },
-			})
-
-			.then((response) => {
-				console.log(response.data.data);
-				setCourses(response.data.data);
-			})
-
-			.catch((err) => {
-				console.log(err);
-			});
-        });
-	};
-
 	return (
 		<button
 			className="btn btn-primary grid justify-items-end"
-			onClick={deleteEnrolments}
+			onClick={onDelete}
 		>
 			{" "}
 			{isLoading ? "Deleting..." : "Deleted"}{" "}
